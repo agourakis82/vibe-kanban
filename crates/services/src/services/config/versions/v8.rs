@@ -22,7 +22,7 @@ fn default_commit_reminder_enabled() -> bool {
 }
 
 fn default_relay_enabled() -> bool {
-    true
+    false
 }
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize, TS, PartialEq, Eq)]
@@ -97,7 +97,7 @@ impl Config {
             commit_reminder_enabled: true,
             commit_reminder_prompt: None,
             send_message_shortcut: SendMessageShortcut::default(),
-            relay_enabled: true,
+            relay_enabled: false,
             host_nickname: None,
         }
     }
@@ -153,7 +153,7 @@ impl Default for Config {
             commit_reminder_enabled: true,
             commit_reminder_prompt: None,
             send_message_shortcut: SendMessageShortcut::default(),
-            relay_enabled: true,
+            relay_enabled: false,
             host_nickname: None,
         }
     }

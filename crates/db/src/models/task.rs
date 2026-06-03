@@ -55,4 +55,38 @@ impl Task {
         .fetch_optional(pool)
         .await
     }
+
+    /// List all tasks for a project (local board data source). Non-macro query
+    /// so new endpoints don't require regenerating the sqlx offline cache.
+    pub async fn find_by_project(
+        pool: &SqlitePool,
+        project_id: Uuid,
+    ) -> Result<Vec<Self>, sqlx::Error> {
+        sqlx::query_as::<_, Task>(
+            r#"SELECT id, project_id, title, description, status, parent_workspace_id, created_at, updated_at
+               FROM tasks
+               WHERE project_id = ?
+               ORDER BY created_at ASC"#,
+        )
+        .bind(project_id)
+        .fetch_all(pool)
+        .await
+    }
+
+    /// Move a task to a new status (kanban drag-drop write path). Returns the
+    /// updated task, or None if no task with that id exists.
+    pub async fn update_status(
+        pool: &SqlitePool,
+        id: Uuid,
+        status: TaskStatus,
+    ) -> Result<Option<Self>, sqlx::Error> {
+        let now = Utc::now();
+        sqlx::query("UPDATE tasks SET status = ?, updated_at = ? WHERE id = ?")
+            .bind(status)
+            .bind(now)
+            .bind(id)
+            .execute(pool)
+            .await?;
+        Self::find_by_id(pool, id).await
+    }
 }
