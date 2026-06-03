@@ -1,5 +1,5 @@
-import { ProjectKanban } from '@/pages/kanban/ProjectKanban';
+import { LocalBoardPage } from '@/pages/kanban/LocalBoardPage';
 
 export function LocalProjectKanban() {
-  return <ProjectKanban />;
+  return <LocalBoardPage />;
 }
